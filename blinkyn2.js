@@ -1,14 +1,13 @@
-var os = require('os');
-
 var nitrogen = require('nitrogen');
 
 var five = require("johnny-five");
 var fiveinit = require("./johnny-five-board-init");
+var board = fiveinit.getBoard();
+
+var Store = require('nitrogen-file-store');
 
 var LEDPIN = 13;
 var OUTPUT = 1;
-
-var board = fiveinit.getBoard();
 
 board.on("ready", function(){
   var val = 0;
@@ -32,12 +31,11 @@ var config = {
 
 var led;
 
-
-//  config.store = new Store(config);
+config.store = new Store(config);
 
 var simpleLED = new nitrogen.Device({
     nickname: 'simpleLED',
-    name: 'My LED',
+    name: 'My Nitrogen Device',
     tags: ['sends:_isOn', 'executes:_lightOn'],
     api_key: config.api_key
 });
@@ -60,11 +58,11 @@ service.connect(simpleLED, function(err, session, simpleLED) {
 });
 
    
-  board.on("ready", function() {
- 
-    // Create a standard `led` hardware instance
-    led = new five.Led(13);
- 
-    // "strobe" the led in 100ms on-off phases
-    led.strobe(100);
-  })
+board.on("ready", function() {
+
+  // Create a standard `led` hardware instance
+  led = new five.Led(13);
+
+  // "strobe" the led in 100ms on-off phases
+  led.strobe(100);
+})
