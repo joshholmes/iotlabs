@@ -3,41 +3,12 @@ var os = require('os');
 var nitrogen = require('nitrogen');
 
 var five = require("johnny-five");
-var board =  getBoard();
-
-function getBoard() {
-  var OS = os.platform();
-
-  console.log("OS: " + os.platform());
-
-  if (OS == "windows") {
-    return new five.Board(
-      { port: "COM4"}); // Make sure that this is your COM Port
-  }
-  if (OS == "darwin") { // This is OSX
-    return new five.Board();
-  }
-  if (OS == "linux")
-  {
-    return getBoardOnYun();
-  }
-}
-
-function getBoardOnYun()
-{
-  var serialport = require("serialport");
-
-        var serialPort = new serialport.SerialPort("/dev/ttyATH0", {
-           baudrate: 57600
-   });
-      return new five.Board({
-              port: serialPort,
-              debug: true
-    });
-}
+var fiveinit = require("./johnny-five-board-init");
 
 var LEDPIN = 13;
 var OUTPUT = 1;
+
+var board = fiveinit.getBoard();
 
 board.on("ready", function(){
   var val = 0;
