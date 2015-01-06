@@ -21,7 +21,6 @@ board.on("ready", function(){
   });
 });
 
-
 var config = {
     host: process.env.HOST_NAME || 'api.nitrogen.io',
     http_port: process.env.PORT || 443,
