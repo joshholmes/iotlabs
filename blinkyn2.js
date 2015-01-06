@@ -2,24 +2,13 @@ var nitrogen = require('nitrogen');
 
 var five = require("johnny-five");
 var fiveinit = require("./johnny-five-board-init");
+
 var board = fiveinit.getBoard();
 
 var Store = require('nitrogen-file-store');
 
 var LEDPIN = 13;
 var OUTPUT = 1;
-
-board.on("ready", function(){
-  var val = 0;
-
-  // Set pin 13 to OUTPUT mode
-  this.pinMode(LEDPIN, OUTPUT);
-
-  // Create a loop to "flash/blink/strobe" an led
-  this.loop( 100, function() {
-    this.digitalWrite(LEDPIN, (val = val ? 0 : 1));
-  });
-});
 
 var config = {
     host: process.env.HOST_NAME || 'api.nitrogen.io',
@@ -44,6 +33,7 @@ var service = new nitrogen.Service(config);
 service.connect(simpleLED, function(err, session, simpleLED) {
     if (err) return console.log('failed to connect simpleLED: ' + err);
 
+    console.log("creating nitrogen message");
     var message = new nitrogen.Message({
         type: '_isOn',
         body: {
@@ -54,14 +44,18 @@ service.connect(simpleLED, function(err, session, simpleLED) {
     });
 
     message.send(session);
+    console.log("nitrogen message sent");
 });
 
-   
-board.on("ready", function() {
+board.on("ready", function(){
+  var val = 0;
 
-  // Create a standard `led` hardware instance
-  led = new five.Led(13);
+  // Set pin 13 to OUTPUT mode
+  this.pinMode(LEDPIN, OUTPUT);
 
-  // "strobe" the led in 100ms on-off phases
-  led.strobe(100);
-})
+  // Create a loop to "flash/blink/strobe" an led
+  this.loop( 100, function() {
+    this.digitalWrite(LEDPIN, (val = val ? 0 : 1));
+  });
+});
+

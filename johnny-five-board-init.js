@@ -22,7 +22,7 @@ module.exports.getBoard = function() {
 
   if (OS == "win32") {
     return new five.Board(
-      { port: "COM7"}); // Make sure that this is your COM Port
+      { port: "COM5"}); // Make sure that this is your COM Port
   }
   if (OS == "darwin") { // This is OSX
     return new five.Board();
