@@ -14,7 +14,7 @@ var config = {
     host: process.env.HOST_NAME || 'api.nitrogen.io',
     http_port: process.env.PORT || 443,
     protocol: process.env.PROTOCOL || 'https',
-    api_key: "75fecc9fef5fb9ba488e987216442595"
+    api_key: "0dec2ee8e45d4bc660a749feb8f2e978"
 };
 
 var led;
