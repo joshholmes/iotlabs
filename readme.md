@@ -15,7 +15,7 @@ You will need:
 4. Flash the Arduino with Johnny-Five - directions at [Running Johnny-Five](./runningjohnnyfive.md)
 3. Then you'll need to go through their [starting guide](http://start.tessel.io/install). 
 
-The next bit that you'll need is on the Nitrogen side. 
+## The next bit that you'll need is on the Nitrogen side. 
 
 1. You'll need to install the Nitrogen client library for your laptop so you can prevision devices and send command. See the [Nitrogen starting guide](http://nitrogen.io/guides/start/setup.html) for more details. 
 

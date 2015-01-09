@@ -4,28 +4,10 @@ var fiveinit = require("./johnny-five-board-init");
 
 var board = fiveinit.getBoard();
 
-var Store = require('nitrogen-file-store');
+var led;
 
 var LEDPIN = 13;
 var OUTPUT = 1;
-
-var config = {
-    host: process.env.HOST_NAME || 'api.nitrogen.io',
-    http_port: process.env.PORT || 443,
-    protocol: process.env.PROTOCOL || 'https',
-    api_key: "0dec2ee8e45d4bc660a749feb8f2e978"
-};
-
-var led;
-
-config.store = new Store(config);
-
-var simpleLED = new nitrogen.Device({
-    nickname: 'simpleLED',
-    name: 'My Nitrogen Device',
-    tags: ['sends:_isOn', 'executes:_lightOn'],
-    api_key: config.api_key
-});
 
 board.on("ready", function(){
   console.log("Board connected...")
@@ -34,6 +16,23 @@ board.on("ready", function(){
   this.pinMode(LEDPIN, OUTPUT);
 });
 
+
+var config = {
+    host: process.env.HOST_NAME || 'api.nitrogen.io',
+    http_port: process.env.PORT || 443,
+    protocol: process.env.PROTOCOL || 'https',
+    api_key: "0dec2ee8e45d4bc660a749feb8f2e978"
+};
+
+var Store = require('nitrogen-file-store');
+config.store = new Store(config);
+
+var simpleLED = new nitrogen.Device({
+    nickname: 'simpleLED',
+    name: 'My Nitrogen Device',
+    tags: ['sends:_isOn', 'executes:_lightOn'],
+    api_key: config.api_key
+});
 
 function simpleManager() {
     nitrogen.CommandManager.apply(this, arguments);
@@ -46,6 +45,13 @@ simpleManager.prototype.isCommand = function(message) {
     return message.is('_lightOn');
 };
 
+simpleManager.prototype.isRelevant = function(message) {
+    var relevant = ( (message.is('_lightOn') || message.is('_isOn')) &&
+                     (!this.device || message.from === this.device.id || message.to == this.device.id));
+
+    return relevant;
+};
+
 simpleManager.prototype.obsoletes = function(downstreamMsg, upstreamMsg) {
     if (nitrogen.CommandManager.obsoletes(downstreamMsg, upstreamMsg))
         return true;
@@ -55,13 +61,6 @@ simpleManager.prototype.obsoletes = function(downstreamMsg, upstreamMsg) {
                 upstreamMsg.is("_lightOn");
 
     return value;
-};
-
-simpleManager.prototype.isRelevant = function(message) {
-    var relevant = ( (message.is('_lightOn') || message.is('_isOn')) &&
-                     (!this.device || message.from === this.device.id || message.to == this.device.id));
-
-    return relevant;
 };
 
 simpleManager.prototype.executeQueue = function(callback) {
