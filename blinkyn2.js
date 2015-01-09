@@ -1,5 +1,4 @@
 var nitrogen = require('nitrogen');
-//var JSON = require("JSON");
 var five = require("johnny-five");
 var fiveinit = require("./johnny-five-board-init");
 
