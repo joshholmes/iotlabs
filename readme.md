@@ -34,7 +34,8 @@ The next thing to do is to connect to Nitrogen and start sending in telemetry da
         ```
 
 3. Now let's fill out your board initialization
-Please refer to the [Running Johnny-Five](./runningjohnnyfive.md) to make sure you are connecting properly for your platform.  
+
+    Please refer to the [Running Johnny-Five](./runningjohnnyfive.md) to make sure you are connecting properly for your platform.  
 
         ```
         var board = new five.Board();
@@ -52,17 +53,17 @@ Please refer to the [Running Johnny-Five](./runningjohnnyfive.md) to make sure y
         });
         ```
 
-At this point we've initialized your board and are ready to connect to Nitrogen. 
+    At this point we've initialized your board and are ready to connect to Nitrogen. 
 
 4. Now let's get our Nitrogen configuration ready. 
 In a real app, you should put this in a config file somewhere. 
 
-For the API Key Below, if you are in my lab, use the following API key
-`0dec2ee8e45d4bc660a749feb8f2e978`
-
-Otherwise, you need to get an API key from the Nitrogen service following the directions at [getting your API key](./gettingyourapikey). 
-
-Also, make sure that the host and port are correct for your environment. The sample here is using the publicly hosted instance of Nitrogen. 
+    For the API Key Below, if you are in my lab, use the following API key
+    `0dec2ee8e45d4bc660a749feb8f2e978`
+    
+    Otherwise, you need to get an API key from the Nitrogen service following the directions at [getting your API key](./gettingyourapikey). 
+    
+    Also, make sure that the host and port are correct for your environment. The sample here is using the publicly hosted instance of Nitrogen. 
 
         ```
         var config = {
@@ -78,7 +79,7 @@ Also, make sure that the host and port are correct for your environment. The sam
 
 5. Now we're ready to set up your device. 
 
-The first part is to initialize your device as follows. Be sure to change your name to something more unique to you than My Nitrogen Device. 
+    The first part is to initialize your device as follows. Be sure to change your name to something more unique to you than My Nitrogen Device. 
 
         ```
         var simpleLED = new nitrogen.Device({
@@ -108,15 +109,15 @@ The first part is to initialize your device as follows. Be sure to change your n
         });
         ```
 
-At this point you can actually run the app by using the command 'node blinkn2.js'. What it will do is connect to Nitrogen and use your API key to get a device provisioned, save your new device identity into a file called (by default) api.nitrogen.io_443. Then it will send a message to the portal with this new identity. 
-
-Log into the [Admin Portal](https://admin.nitrogen) and look at the messages tab to see your messages. 
+    At this point you can actually run the app by using the command 'node blinkn2.js'. What it will do is connect to Nitrogen and use your API key to get a device provisioned, save your new device identity into a file called (by default) api.nitrogen.io_443. Then it will send a message to the portal with this new identity. 
+    
+    Log into the [Admin Portal](https://admin.nitrogen) and look at the messages tab to see your messages. 
 
 ## Receiving commands. 
 
 Now that we have your device able to send telemetry data, let's set it up to receive commands. This is a little more involved but not terribly hard. 
 
-7. The way that we're going to do this is to create a "command manager". 
+1. The way that we're going to do this is to create a "command manager". 
 
         ```
         function simpleManager() {
@@ -126,12 +127,12 @@ Now that we have your device able to send telemetry data, let's set it up to rec
         simpleManager.prototype = Object.create(nitrogen.CommandManager.prototype);
         simpleManager.prototype.constructor = simpleManager;
         ```
+    
+    At this point we've got a command manager object and we've set it's prototype to the generic nitrogen.CommandManager prototype so technically it could receive commands but by default it doesn't tell Nitrogen that it's interested in any messages. 
 
-At this point we've got a command manager object and we've set it's prototype to the generic nitrogen.CommandManager prototype so technically it could receive commands but by default it doesn't tell Nitrogen that it's interested in any messages. 
+2. The next thing is to tell Nitrogen which messages your device is interested in. 
 
-8. The next thing is to tell Nitrogen which messages your device is interested in. 
-
-The isCommand function tells Nitrogen that this is a command that you respond to and the isRelevant are messages that you want to see. 
+    The isCommand function tells Nitrogen that this is a command that you respond to and the isRelevant are messages that you want to see. 
 
         ```
         simpleManager.prototype.isCommand = function(message) {
@@ -148,9 +149,9 @@ The isCommand function tells Nitrogen that this is a command that you respond to
 
 9. The next thing is to tell Nitrogen which messages you've already handled. 
 
-If you don't set this properly, you'll either kill messages before you've seen them or you'll always see messages that you've been sent for ever or at least until they time out. 
-
-First let the base manager try to handle it and second, try to handle it yourself. You get the two messages, the downstream and the upstream so you can check to see if it was a request response or whatever. 
+    If you don't set this properly, you'll either kill messages before you've seen them or you'll always see messages that you've been sent for ever or at least until they time out. 
+    
+    First let the base manager try to handle it and second, try to handle it yourself. You get the two messages, the downstream and the upstream so you can check to see if it was a request response or whatever. 
 
         ```
         simpleManager.prototype.obsoletes = function(downstreamMsg, upstreamMsg) {
@@ -167,7 +168,7 @@ First let the base manager try to handle it and second, try to handle it yoursel
 
 10. The next bit is to actually receive the message and process it. 
 
-This is a longer function because it's all of your actual business logic. 
+    This is a longer function because it's all of your actual business logic. 
 
         ```
         simpleManager.prototype.executeQueue = function(callback) {
@@ -233,9 +234,9 @@ This is a longer function because it's all of your actual business logic.
         }
         ```
 
-11. Now we need to kick off the Command Manager as follows
+5. Now we need to kick off the Command Manager as follows
 
-The filter below is an array of tags of on the messages that you're interested in. 
+    The filter below is an array of tags of on the messages that you're interested in. 
 
         ```
         simpleManager.prototype.start = function(session, callback) {
@@ -247,9 +248,9 @@ The filter below is an array of tags of on the messages that you're interested i
         };
         ```
 
-12. The very last bit of code is to initialize the command manager in the session start. 
+6. The very last bit of code is to initialize the command manager in the session start. 
 
-We already have a session start so modify that function as follows
+    We already have a session start so modify that function as follows
 
         ```
         service.connect(simpleLED, function(err, session, simpleLED) {
@@ -262,11 +263,11 @@ We already have a session start so modify that function as follows
 
         ```
 
-At this point, run your device with the command `node blinkn2.js`. 
-
-Once it's up and running, you are ready to send commands to the device from a different laptop or just a different terminal window. Make sure to keep the johnny-five app running. 
-
-13. Send commands as follows. 
+    At this point, run your device with the command `node blinkn2.js`. 
+    
+    Once it's up and running, you are ready to send commands to the device from a different laptop or just a different terminal window. Make sure to keep the johnny-five app running. 
+    
+7. Send commands as follows. 
 
 Step one, get your device ID by either logging into the portal and looking for your device in the list of devices or you can run the command `n2 device ls`.
 
