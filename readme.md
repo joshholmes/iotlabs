@@ -28,30 +28,29 @@ The next thing to do is to connect to Nitrogen and start sending in telemetry da
 1. Create a file called `blinkn2.js`. N2 is our shorthand for Nitrogen. 
 2. Type in your requires
 
-```
-var nitrogen = require('nitrogen');
-var five = require("johnny-five");
-```
-
+        ```
+        var nitrogen = require('nitrogen');
+        var five = require("johnny-five");
+        ```
 
 3. Now let's fill out your board initialization
 Please refer to the [Running Johnny-Five](./runningjohnnyfive.md) to make sure you are connecting properly for your platform.  
 
-```
-var board = new five.Board();
+        ```
+        var board = new five.Board();
 
-var led;
+        var led;
 
-var LEDPIN = 13;
-var OUTPUT = 1;
+        var LEDPIN = 13;
+        var OUTPUT = 1;
 
-board.on("ready", function(){
-  console.log("Board connected...")
+        board.on("ready", function(){
+          console.log("Board connected...")
 
-  // Set pin 13 to OUTPUT mode
-  this.pinMode(LEDPIN, OUTPUT);
-});
-```
+          // Set pin 13 to OUTPUT mode
+          this.pinMode(LEDPIN, OUTPUT);
+        });
+        ```
 
 At this point we've initialized your board and are ready to connect to Nitrogen. 
 
@@ -65,49 +64,49 @@ Otherwise, you need to get an API key from the Nitrogen service following the di
 
 Also, make sure that the host and port are correct for your environment. The sample here is using the publicly hosted instance of Nitrogen. 
 
-```
-var config = {
-    host: process.env.HOST_NAME || 'api.nitrogen.io',
-    http_port: process.env.PORT || 443,
-    protocol: process.env.PROTOCOL || 'https',
-    api_key: "<Your API key>"
-};
+        ```
+        var config = {
+            host: process.env.HOST_NAME || 'api.nitrogen.io',
+            http_port: process.env.PORT || 443,
+            protocol: process.env.PROTOCOL || 'https',
+            api_key: "<Your API key>"
+        };
 
-var Store = require('nitrogen-file-store');
-config.store = new Store(config);
-```
+        var Store = require('nitrogen-file-store');
+        config.store = new Store(config);
+        ```
 
 5. Now we're ready to set up your device. 
 
 The first part is to initialize your device as follows. Be sure to change your name to something more unique to you than My Nitrogen Device. 
 
-```
-var simpleLED = new nitrogen.Device({
-    nickname: 'simpleLED',
-    name: 'My Nitrogen Device',
-    tags: ['sends:_isOn', 'executes:_lightOn'],
-    api_key: config.api_key
-});
-```
+        ```
+        var simpleLED = new nitrogen.Device({
+            nickname: 'simpleLED',
+            name: 'My Nitrogen Device',
+            tags: ['sends:_isOn', 'executes:_lightOn'],
+            api_key: config.api_key
+        });
+        ```
 
 6. The next thing is to connect to the service and send a message. 
 
-```
-var service = new nitrogen.Service(config);
-service.connect(simpleLED, function(err, session, simpleLED) {
-    console.log("Connected to Nitrogen");
-    var message = new nitrogen.Message({
-        type: '_isOn',
-        body: {
-            command: {
-                message: "Light (" + simpleLED.id + ") is On at " + Date.now()
-            }
-        }
-    });
+        ```
+        var service = new nitrogen.Service(config);
+        service.connect(simpleLED, function(err, session, simpleLED) {
+            console.log("Connected to Nitrogen");
+            var message = new nitrogen.Message({
+                type: '_isOn',
+                body: {
+                    command: {
+                        message: "Light (" + simpleLED.id + ") is On at " + Date.now()
+                    }
+                }
+            });
 
-    message.send(session);
-});
-```
+            message.send(session);
+        });
+        ```
 
 At this point you can actually run the app by using the command 'node blinkn2.js'. What it will do is connect to Nitrogen and use your API key to get a device provisioned, save your new device identity into a file called (by default) api.nitrogen.io_443. Then it will send a message to the portal with this new identity. 
 
@@ -119,14 +118,14 @@ Now that we have your device able to send telemetry data, let's set it up to rec
 
 7. The way that we're going to do this is to create a "command manager". 
 
-```
-function simpleManager() {
-    nitrogen.CommandManager.apply(this, arguments);
-}
+        ```
+        function simpleManager() {
+            nitrogen.CommandManager.apply(this, arguments);
+        }
 
-simpleManager.prototype = Object.create(nitrogen.CommandManager.prototype);
-simpleManager.prototype.constructor = simpleManager;
-```
+        simpleManager.prototype = Object.create(nitrogen.CommandManager.prototype);
+        simpleManager.prototype.constructor = simpleManager;
+        ```
 
 At this point we've got a command manager object and we've set it's prototype to the generic nitrogen.CommandManager prototype so technically it could receive commands but by default it doesn't tell Nitrogen that it's interested in any messages. 
 
@@ -134,18 +133,18 @@ At this point we've got a command manager object and we've set it's prototype to
 
 The isCommand function tells Nitrogen that this is a command that you respond to and the isRelevant are messages that you want to see. 
 
-```
-simpleManager.prototype.isCommand = function(message) {
-    return message.is('_lightOn');
-};
+        ```
+        simpleManager.prototype.isCommand = function(message) {
+            return message.is('_lightOn');
+        };
 
-simpleManager.prototype.isRelevant = function(message) {
-    var relevant = ( (message.is('_lightOn') || message.is('_isOn')) &&
-                     (!this.device || message.from === this.device.id || message.to == this.device.id));
+        simpleManager.prototype.isRelevant = function(message) {
+            var relevant = ( (message.is('_lightOn') || message.is('_isOn')) &&
+                             (!this.device || message.from === this.device.id || message.to == this.device.id));
 
-    return relevant;
-};
-```
+            return relevant;
+        };
+        ```
 
 9. The next thing is to tell Nitrogen which messages you've already handled. 
 
@@ -153,115 +152,115 @@ If you don't set this properly, you'll either kill messages before you've seen t
 
 First let the base manager try to handle it and second, try to handle it yourself. You get the two messages, the downstream and the upstream so you can check to see if it was a request response or whatever. 
 
-```
-simpleManager.prototype.obsoletes = function(downstreamMsg, upstreamMsg) {
-    if (nitrogen.CommandManager.obsoletes(downstreamMsg, upstreamMsg))
-        return true;
+        ```
+        simpleManager.prototype.obsoletes = function(downstreamMsg, upstreamMsg) {
+            if (nitrogen.CommandManager.obsoletes(downstreamMsg, upstreamMsg))
+                return true;
 
-    var value = downstreamMsg.is("_isOn") &&
-                downstreamMsg.isResponseTo(upstreamMsg) &&
-                upstreamMsg.is("_lightOn");
+            var value = downstreamMsg.is("_isOn") &&
+                        downstreamMsg.isResponseTo(upstreamMsg) &&
+                        upstreamMsg.is("_lightOn");
 
-    return value;
-};
-```
+            return value;
+        };
+        ```
 
 10. The next bit is to actually receive the message and process it. 
 
 This is a longer function because it's all of your actual business logic. 
 
-```
-simpleManager.prototype.executeQueue = function(callback) {
-    var self = this;
+        ```
+        simpleManager.prototype.executeQueue = function(callback) {
+            var self = this;
 
-    if (!this.device) return callback(new Error('no device attached to control manager.'));
+            if (!this.device) return callback(new Error('no device attached to control manager.'));
 
-    // This looks at the list of active commands and returns if there's no commands to process.
-    var activeCommands = this.activeCommands();
-    if (activeCommands.length === 0) {
-        this.session.log.warn('simpleManager::executeQueue: no active commands to execute.');
-        return callback();
-    }
-
-    var lightOn;
-    var commandIds = [];
-
-    // Here we are going to find the final state and but collect all the 
-    // active command ids because we'll use them in a moment.
-    activeCommands.forEach(function(activeCommand) {
-      console.log("activeCommand: " + JSON.stringify(activeCommand));
-        try {
-          lightOn = activeCommand.body.value;
-          commandIds.push(activeCommand.id);
-
-          if (lightOn == "true")
-          {
-            board.digitalWrite(LEDPIN, 1);
-          }
-          else
-          {
-            board.digitalWrite(LEDPIN, 0);
-          }
-
-         } catch (ex) {
-          callback(ex);
-        }
-    });
-
-    // This is the response to the _lightOn command.
-    var message = new nitrogen.Message({
-        type: '_isOn',
-        tags: nitrogen.CommandManager.commandTag(self.device.id),
-        body: {
-            command: {
-                message: "Light (" + simpleLED.id + ") is " + JSON.stringify(lightOn) + " at " + Date.now()
+            // This looks at the list of active commands and returns if there's no commands to process.
+            var activeCommands = this.activeCommands();
+            if (activeCommands.length === 0) {
+                this.session.log.warn('simpleManager::executeQueue: no active commands to execute.');
+                return callback();
             }
-        },
-        // Notice the response_to is the array of command ids from above. 
-        // This is used in the obsoletes method above as well.
-        response_to: commandIds
-    });
 
-    message.send(this.session, function(err, message) {
-        if (err) return callback(err);
+            var lightOn;
+            var commandIds = [];
 
-        // let the command manager know we processed this _lightOn message by passing it the _isOn message.
-        self.process(new nitrogen.Message(message));
+            // Here we are going to find the final state and but collect all the 
+            // active command ids because we'll use them in a moment.
+            activeCommands.forEach(function(activeCommand) {
+              console.log("activeCommand: " + JSON.stringify(activeCommand));
+                try {
+                  lightOn = activeCommand.body.value;
+                  commandIds.push(activeCommand.id);
 
-        // need to callback if there aren't any issues so commandManager can proceed.
-        return callback();
-    });
-}
-```
+                  if (lightOn == "true")
+                  {
+                    board.digitalWrite(LEDPIN, 1);
+                  }
+                  else
+                  {
+                    board.digitalWrite(LEDPIN, 0);
+                  }
+
+                 } catch (ex) {
+                  callback(ex);
+                }
+            });
+
+            // This is the response to the _lightOn command.
+            var message = new nitrogen.Message({
+                type: '_isOn',
+                tags: nitrogen.CommandManager.commandTag(self.device.id),
+                body: {
+                    command: {
+                        message: "Light (" + simpleLED.id + ") is " + JSON.stringify(lightOn) + " at " + Date.now()
+                    }
+                },
+                // Notice the response_to is the array of command ids from above. 
+                // This is used in the obsoletes method above as well.
+                response_to: commandIds
+            });
+
+            message.send(this.session, function(err, message) {
+                if (err) return callback(err);
+
+                // let the command manager know we processed this _lightOn message by passing it the _isOn message.
+                self.process(new nitrogen.Message(message));
+
+                // need to callback if there aren't any issues so commandManager can proceed.
+                return callback();
+            });
+        }
+        ```
 
 11. Now we need to kick off the Command Manager as follows
 
 The filter below is an array of tags of on the messages that you're interested in. 
 
-```
-simpleManager.prototype.start = function(session, callback) {
-    var filter = {
-        tags: nitrogen.CommandManager.commandTag(this.device.id)
-    };
+        ```
+        simpleManager.prototype.start = function(session, callback) {
+            var filter = {
+                tags: nitrogen.CommandManager.commandTag(this.device.id)
+            };
 
-    return nitrogen.CommandManager.prototype.start.call(this, session, filter, callback);
-};
-```
+            return nitrogen.CommandManager.prototype.start.call(this, session, filter, callback);
+        };
+        ```
 
 12. The very last bit of code is to initialize the command manager in the session start. 
 
 We already have a session start so modify that function as follows
 
-```
-service.connect(simpleLED, function(err, session, simpleLED) {
-... all of the existing code stays, just add the following
+        ```
+        service.connect(simpleLED, function(err, session, simpleLED) {
+        ... all of the existing code stays, just add the following
 
-    new simpleManager(simpleLED).start(session, function(err, message) {
-        if (err) return session.log.error(JSON.stringify(err));
-    });
-});
+            new simpleManager(simpleLED).start(session, function(err, message) {
+                if (err) return session.log.error(JSON.stringify(err));
+            });
+        });
 
-```
+        ```
 
 At this point, run your device with the command `node blinkn2.js`. 
 
