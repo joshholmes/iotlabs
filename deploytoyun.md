@@ -2,6 +2,8 @@
 
 Now that you've got a johnny-five app running from your laptop controlling a device, the next thing you can do, if you have a Yun, is deploy to the Yun and let it run the app by itself. 
 
+If you got the Yun from me, it's probably already set up. If you didn't you'll need to install Node and Johnny Five on the Yun by following the directions at [Prepping your Yun for Johnny-Five](preppingyunforjohnnyfiveandnitrogen.md). 
+
 ## Deploying to the Yun
 
 1. Get your IP Address for your Yun by following the directions at [IP Address Sketch for your Yun](gettingyouripaddressonayun.md)

@@ -183,6 +183,4 @@ Congratulations!
 
 The last step is only if you have a Yun. 
 
-If you got the Yun from me, it's probably already set up. If you didn't you'll need to install Node and Johnny Five on the Yun by following the directions at [Prepping your Yun for Johnny-Five](preppingyunforjohnnyfiveandnitrogen.md). 
-
-Once your Yun is set up, you can deploy the node app to your Yun and run it from there. That way you can disconnect your laptop, power the Yun from a wall plug or battery pack and let it run the program itself. 
+[Deploy to Yun](./deploytoyun.md)
