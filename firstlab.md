@@ -149,4 +149,4 @@ At this point you can run the app and start sending telemetry data in. What it w
 
 In this lab you've gotten your first device up and running and have connected to Nitrogen to send telemetry data in. In the next lab, we'll recieve commands from Nitrogen and react to them. 
 
-[Next lab - receiving commands](./secondlab-receice.md)
+[Next lab - receiving commands](./secondlab-receive.md)
