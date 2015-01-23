@@ -1,0 +1,16 @@
+{
+  "name": "simpleLED",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "version": "0.1.0",
+  "private": "true",
+  "dependencies": {
+    "nitrogen": "~0.2.0",
+    "nitrogen-leveldb-store": "~0.1.201"
+  },
+  "devDependencies": {
+    "mocha": "1.x"
+  }
+}
