@@ -35,8 +35,8 @@ void loop() {
 }
 
 void runifconfig() {
-  // Launch "curl" command and get Arduino ascii art logo from the network
-  // curl is command line program for transferring data using different internet protocols
+  // Launch "ifconfig" command and get Arduino ascii art logo from the network
+  // ifconfig is command line program that gives you your network configuration information.
   Process p;        // Create a process and call it "p"
   p.begin("ifconfig");  // Process that launch the "curl" command
   p.run();      // Run the process and wait for its termination
