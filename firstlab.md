@@ -86,7 +86,7 @@ In a real app, you should put this in a config file somewhere.
     For the API Key Below, if you are in my lab, use the following API key
     `0dec2ee8e45d4bc660a749feb8f2e978`
     
-    Otherwise, you need to get an API key from the Nitrogen service following the directions at [getting your API key](./gettingyourapikey). 
+    Otherwise, you need to get an API key from the Nitrogen service following the directions at [getting your API key](./gettingyourapikey.md). 
     
     Also, make sure that the host and port are correct for your environment. The sample here is using the publicly hosted instance of Nitrogen. 
 
