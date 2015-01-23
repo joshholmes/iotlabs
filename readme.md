@@ -25,7 +25,7 @@ At this point you've set up Johnny-Five, flashed your Arduino, run your first Jo
 
 We've got a small series of labs that will get you started. The first will connect you to Nitrogen and get you sending messages. The second will allow you to control your device remotely. 
 
-1. [First Lab - Connecting to Nitrogen](./firstlab.md)
-2. [Second lab - receiving commands](./secondlab-receive.md)
+1. [First Lab - Connecting to Nitrogen](./labdocs/firstlab.md)
+2. [Second lab - receiving commands](./labdocs/secondlab-receive.md)
 
-3. [Deploy to your Yun](./deploytoyun.md)
+3. [Deploy to your Yun](./labdocs/deploytoyun.md)
