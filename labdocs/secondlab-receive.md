@@ -158,7 +158,10 @@ Now that we have your device able to send telemetry data, let's set it up to rec
     
 7. Send commands as follows. 
 
-Step one, get your device ID by either logging into the portal and looking for your device in the list of devices or you can run the command `./node_modules/.bin/n2 device ls`.
+Step one, login to n2:
+ ` ./node_modules/.bin/n2 principal login n2labs@outlook.com.`
+
+Step two, get your device ID by either logging into the portal and looking for your device in the list of devices or you can run the command `./node_modules/.bin/n2 device ls`.
 
 The one catch here is that different operating systems parse command line JSON in different ways so look for your OS's 
 
