@@ -120,7 +120,7 @@ Now that we have your device able to send telemetry data, let's set it up to rec
                 // need to callback if there aren't any issues so commandManager can proceed.
                 return callback();
             });
-        }
+        };
         ```
 
 5. Now we need to kick off the Command Manager as follows
