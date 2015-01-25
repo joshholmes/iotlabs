@@ -12,7 +12,7 @@ You will need:
 
 1. [Arduino Yun](http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN). 
 2. And you'll need to prep your Arduino Yun. If you are in one of my labs, I've already done this for you. Otherwise, check the bottom of this page for details. 
-4. Flash the Arduino with Johnny-Five - directions at [Running Johnny-Five](./runningjohnnyfive.md)
+4. Flash the Arduino with Johnny-Five - directions at [Running Johnny-Five](./labdocs/runningjohnnyfive.md)
 3. Then you'll need to go through their [starting guide](http://start.tessel.io/install). 
 
 ## The next bit that you'll need is on the Nitrogen side. 
