@@ -71,7 +71,7 @@ The next thing to do is to connect to Nitrogen and start sending in telemetry da
         var OUTPUT = 1;
 
         board.on("ready", function(){
-          console.log("Board connected...")
+          console.log("Board connected...");
 
           // Set pin 13 to OUTPUT mode
           this.pinMode(LEDPIN, OUTPUT);
