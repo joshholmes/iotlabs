@@ -1,12 +1,12 @@
-var Store = require('nitrogen-leveldb-store'),
+var Store = require('nitrogen-file-store'),
     nitrogen = require('nitrogen');
 
 
 var config = {
-    host: process.env.HOST_NAME || 'localhost',
-    http_port: process.env.PORT || 3030,
-    protocol: process.env.PROTOCOL || 'http',
-    api_key: "e6c314ac9133a1ba9fcafd8192c7b617"
+    host: 'api.nitrogen.io',
+    http_port: 443,
+    protocol: 'https',
+    api_key: "0dec2ee8e45d4bc660a749feb8f2e978"
 };
 
 config.store = new Store(config);
@@ -19,10 +19,6 @@ var simpleLED = new nitrogen.Device({
 });
 
 var service = new nitrogen.Service(config);
-
-service.connect(simpleLED, function(err, session, simpleLED) {
-    if (err) return console.log('failed to connect simpleLED: ' + err);
-});
 
 service.connect(simpleLED, function(err, session, simpleLED) {
     if (err) return console.log('failed to connect simpleLED: ' + err);
