@@ -10,11 +10,12 @@ The first thing that you need to do is flash your Arduino with the firmware requ
 	a. If you are using the Arduino Yun or the Arduino Due, make sure that you download a copy that has support for it. Currently that's the 1.5.8 Beta.
 1. Plug your Arduino into your laptop
 2. Open the Arduino IDE. 
-3. Click on File | Examples | Firmata | StandardFirmata
-4. Click on Tools | Board | <Your board type>
-5. Click on Tools | Port | <Your Arduino's Port>
+3. Click on File | Examples | Firmata | StandardFirmata (this will open a new sketch - close the original sketch and proceed using the new sketch).
+4. Click on Tools | Board | &lt;Your board type&gt;
+5. Click on Tools | Port | &lt;Your Arduino's Port&gt;
+6. Upload the sketch to your Arduino
 
-At this point your device is ready to go. You can close the Arduino IDE at this point because we're not going to be using it to code your application logic. 
+At this point your device is ready to go. Close the Arduino IDE (we're not going to be using it to code your application logic). 
 
 ## Prepping your desktop
 
@@ -35,7 +36,7 @@ This will create an object that talks to your board. On OSX, that's all you have
 Windows:
 ```
 var board = new five.Board({
-	port: "COM4" // Make sure that this is your COM Port
+	port: "COM4" // Make sure that this is your COM Port from Step 6 above
 	}); 
 ```
 Linux:
