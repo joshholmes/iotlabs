@@ -1,6 +1,6 @@
-# Light Sensor
+# Night Light
 
-In this lab, we're going to connect a light sensor to the device and start reading it. 
+In this first lab, we're going to use what we've learned so far and create a simple night light. 
 
 ## Double check your package.json. 
 
@@ -42,7 +42,7 @@ If you did the [blink.js](./blinky.md) lab, you can just use the same folder and
 
 The next thing to do is to set up the device in JavaScript and start talking to it. 
 
-1. Create a file called `lightsensor.js`. 
+1. Create a file called `nightlight.js`. 
 2. Type in your requires. The things that are listed here are the things that this file has access to. This should match what's in your package.json file. 
 
         ```
@@ -56,14 +56,29 @@ The next thing to do is to set up the device in JavaScript and start talking to 
         ```
         var board = new five.Board();
 
+        var led;
+
+        var LEDPIN = 13; //13 is an LED on the board as well as a pin
+        var ON = 1; // 1 is on
+        var OFF = 0; // 0 is off
+
         board.on("ready", function(){
           console.log("Board connected...");
 
           var light = new five.Sensor("A0");
 
           light.on("change", function() {
+            var lightValue = Math.round(this.value * .1);
             //JOSH - check console.write
             console.write("Light is @ " + Math.round(this.value * .1) + "%");
+            if (lightValue > 50)
+            {
+              this.pinMode(LEDPIN, ON);
+            }
+            else
+            {
+              this.pinMode(LEDPIN, OFF);
+            }
           });      
         });
         ```
@@ -74,14 +89,13 @@ At this point you can run the app and start your device. The Johnny-Five app wil
 
 1. Run your device with the following command 
 
-    `node lightsensor.js`
+    `node nightlight.js`
 
 ## Summary
 
-In this lab you've gotten your device up and running and are reading the light sensor. 
+In this lab you've gotten your device up and running, are reading the light sensor and reacting to it with the LED. This creates a simple night light effect. Test by covering your light sensor and then exposing it to bright light. 
 
-Something to notice is that we are not creating a "light object" with Johnny-five. We are creating a sensor and reading that sensor. The analog sensors return a number and it's up to us to interpret the numbers to something that makes sense to us. In the next lab we'll start using this sensor reading and making interpretations on it. 
 
-At this point you should have a high level understanding of reading sensors with Johnny-Five and be ready to move on to the next lab. 
+At this point you should be ready to start connecting a device to Nitrogen. 
 
-[next lab - night light](./nightlight.md)
+[next lab - connecting](./connect.md)

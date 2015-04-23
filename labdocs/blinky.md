@@ -1,6 +1,6 @@
 # Blinky
 
-In this first lab, we're going to connect to the device with Johnny-Five and start sending the device commands.
+In this lab, we're going to connect to the device with Johnny-Five and start sending the device commands.
 
 ## Setting up your NPM prerequisites 
 
