@@ -71,7 +71,7 @@ The next thing to do is to connect to Nitrogen and start sending in telemetry da
         var OUTPUT = 1;
 
         board.on("ready", function(){
-          console.log("Board connected...")
+          console.log("Board connected...");
 
           // Set pin 13 to OUTPUT mode
           this.pinMode(LEDPIN, OUTPUT);
@@ -143,7 +143,7 @@ At this point you can run the app and start sending telemetry data in. What it w
 
     `node blinkn2.js`
 
-2. Log into the [Admin Portal](https://admin.nitrogen) and look at the messages tab to see your messages. 
+2. Log into the [Admin Portal](https://admin.nitrogen.io) and look at the messages tab to see your messages. 
 
 ## Summary
 

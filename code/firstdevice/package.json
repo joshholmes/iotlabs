@@ -8,7 +8,7 @@
   "private": "true",
   "dependencies": {
     "nitrogen": "~0.2.0",
-    "nitrogen-leveldb-store": "~0.1.201"
+    "nitrogen-file-store": "~0.2.1"
   },
   "devDependencies": {
     "mocha": "1.x"
