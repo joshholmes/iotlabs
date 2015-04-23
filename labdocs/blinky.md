@@ -60,8 +60,6 @@ The next thing to do is to set up the device in JavaScript and start talking to 
         ```
         var board = new five.Board();
 
-        var led;
-
         var LEDPIN = 13; //13 is an LED on the board as well as a pin
         var ON = 1; // 1 is on
 
