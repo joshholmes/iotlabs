@@ -12,12 +12,11 @@ You will need:
 
 1. [Arduino Yun](http://arduino.cc/en/Main/ArduinoBoardYun?from=Products.ArduinoYUN). 
 2. And you'll need to prep your Arduino Yun. If you are in one of my labs, I've already done this for you. Otherwise, check the bottom of this page for details. 
-4. Flash the Arduino with Johnny-Five - directions at [Running Johnny-Five](./labdocs/runningjohnnyfive.md)
-3. Then you'll need to go through their [starting guide](http://start.tessel.io/install). 
+3. Flash the Arduino with Johnny-Five - directions at [Running Johnny-Five](./labdocs/runningjohnnyfive.md)
 
 ## The next bit that you'll need is on the Nitrogen side. 
 
-1. You'll need to install the Nitrogen client library for your laptop so you can prevision devices and send command. See the [Nitrogen starting guide](http://nitrogen.io/guides/start/setup.html) for more details. 
+1. You'll need to install the Nitrogen client library for your laptop so you can prevision devices and send command. See the [Nitrogen starting guide](http://nitrogen.io/guides/temperature/setup.html) for more details. 
 
 At this point you've set up Johnny-Five, flashed your Arduino, run your first Johnny-Five app and finally installed the Nitrogen client bits. 
 
@@ -25,7 +24,14 @@ At this point you've set up Johnny-Five, flashed your Arduino, run your first Jo
 
 We've got a small series of labs that will get you started. The first will connect you to Nitrogen and get you sending messages. The second will allow you to control your device remotely. 
 
-1. [First Lab - Connecting to Nitrogen](./labdocs/firstlab.md)
-2. [Second lab - receiving commands](./labdocs/secondlab-receive.md)
+The first set of 3 labs is about doing stuff on the device. 
 
-3. [Deploy to your Yun](./labdocs/deploytoyun.md)
+1. [Blinky](./labdocs/blinky.md)
+2. [Light Sensor](./labdocs/lightsensor.md)
+3. [Night light](./labdocs/nightlight.md)
+
+The second set of three is about talking to the cloud and doing things remotely. 
+
+4. [Connecting to Nitrogen](./labdocs/connect.md)
+5. [receiving commands](./labdocs/receive.md)
+6. [Deploy to your Yun](./labdocs/deploytoyun.md)
