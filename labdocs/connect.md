@@ -1,10 +1,12 @@
-# First lab
+# Connecting to Nitrogen
 
-In this first lab, we're going to connect to Nitrogen and send some data. Once we have that, we'll move on to receiving commands 
+In this lab, we're going to connect to Nitrogen and send some data. Once we have that, we'll move on to receiving commands 
 
 ## Setting up your NPM prerequisites 
 
-Node uses a install manager called the Node Package Manager (NPM) to install anything that you are dependent on in your node.js application. You can either manually run npm for each package or you can create a package.json file and install with a single command. 
+As you should know by now if you didn't just jump to this lab, Node uses a install manager called the Node Package Manager (NPM) to install anything that you are dependent on in your node.js application. You can either manually run npm for each package or you can create a package.json file and install with a single command. 
+
+If you did the previous labs, you can just modify your existing package.json by adding the additional dependencies. 
 
 1. Create a file called package.json
     
@@ -50,7 +52,7 @@ Node uses a install manager called the Node Package Manager (NPM) to install any
 
 The next thing to do is to connect to Nitrogen and start sending in telemetry data. 
 
-1. Create a file called `blinkn2.js`. N2 is our shorthand for Nitrogen. 
+1. Create a file called `connectN2.js`. N2 is our shorthand for Nitrogen. 
 2. Type in your requires
 
         ```
@@ -65,16 +67,15 @@ The next thing to do is to connect to Nitrogen and start sending in telemetry da
         ```
         var board = new five.Board();
 
-        var led;
-
-        var LEDPIN = 13;
-        var OUTPUT = 1;
-
         board.on("ready", function(){
           console.log("Board connected...");
 
-          // Set pin 13 to OUTPUT mode
-          this.pinMode(LEDPIN, OUTPUT);
+          var light = new five.Sensor("A0");
+
+          light.on("change", function() {
+            //JOSH - check console.write
+            console.write("Light is @ " + Math.round(this.value * .1) + "%");
+          });      
         });
         ```
 
@@ -107,10 +108,10 @@ In a real app, you should put this in a config file somewhere.
     The first part is to initialize your device as follows. Be sure to change your name to something more unique to you than My Nitrogen Device. 
 
         ```
-        var simpleLED = new nitrogen.Device({
-            nickname: 'simpleLED',
+        var simpleLightSensor = new nitrogen.Device({
+            nickname: 'simpleLightSensor',
             name: 'My Nitrogen Device',
-            tags: ['sends:_isOn', 'executes:_lightOn'],
+            tags: ['sends:_isConnected, _lightValue', 'executes:_lightValue'],
             api_key: config.api_key
         });
         ```
@@ -119,13 +120,13 @@ In a real app, you should put this in a config file somewhere.
 
         ```
         var service = new nitrogen.Service(config);
-        service.connect(simpleLED, function(err, session, simpleLED) {
+        service.connect(simpleLightSensor, function(err, session, simpleLightSensor) {
             console.log("Connected to Nitrogen");
             var message = new nitrogen.Message({
-                type: '_isOn',
+                type: '_isConnected',
                 body: {
                     command: {
-                        message: "Light (" + simpleLED.id + ") is On at " + Date.now()
+                        message: "Light (" + simpleLightSensor.id + ") is connected at " + Date.now()
                     }
                 }
             });
@@ -133,20 +134,45 @@ In a real app, you should put this in a config file somewhere.
             message.send(session);
         });
         ```
+7. Modify the app to actually send telemetry data. 
 
-    
+        ```
+          light.on("change", function() {
+            var lightValue = Math.round(this.value * .1);
+
+            sendMessage(lightValue);
+          });      
+        ```
+
+        ```
+        function sendMessage(lightValue) {
+            var message = new nitrogen.Message({
+            type: '_lightValue',
+            body: {
+                command: {
+                    message: "Light (" + simpleLightSensor.id + ") is at " + lightValue + "%"
+                }
+            }
+            });
+
+            message.send(session);
+
+        }
+        ```
+
 ## Running your device
 
 At this point you can run the app and start sending telemetry data in. What it will do is connect to Nitrogen and use your API key to get a device provisioned, save your new device identity into a file called (by default) api.nitrogen.io_443. Then it will send a message to the portal with this new identity. 
 
 1. Run your device with the following command 
 
-    `node blinkn2.js`
+    `node connectN2.js`
 
 2. Log into the [Admin Portal](https://admin.nitrogen.io) and look at the messages tab to see your messages. 
 
 ## Summary
 
-In this lab you've gotten your first device up and running and have connected to Nitrogen to send telemetry data in. In the next lab, we'll recieve commands from Nitrogen and react to them. 
+In this lab you've gotten your first device up and running and have connected to Nitrogen to send telemetry data in. In the next lab, we'll receive commands from Nitrogen and react to them. 
 
-[Next lab - receiving commands](./secondlab-receive.md)
+
+[Next lab - receiving commands](./receive.md)

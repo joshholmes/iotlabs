@@ -1,6 +1,6 @@
-# Second lab - receiving commands from Nitrogen
+# Receiving commands from Nitrogen
 
-In the previous lab ([First lab, connecting to Nitrogen](./firstlab.md)) you connected to Nitrogen and were able to send in commands. In this lab, we'll connect up the second side of equation and be able to turn on and off the light remotely. 
+In the previous lab ([connecting to Nitrogen](./connect.md)) you connected to Nitrogen and were able to send in telemetry data. In this lab, we'll connect up the second side of equation and be able to turn on and off the light remotely. 
 
 ## Receiving commands. 
 
@@ -29,7 +29,7 @@ Now that we have your device able to send telemetry data, let's set it up to rec
         };
 
         SimpleManager.prototype.isRelevant = function(message) {
-            var relevant = ( (message.is('_lightOn') || message.is('_isOn')) &&
+            var relevant = ( (message.is('_lightValue') || message.is('_isOn')) &&
                              (!this.device || message.from === this.device.id || message.to == this.device.id));
 
             return relevant;
@@ -103,7 +103,7 @@ Now that we have your device able to send telemetry data, let's set it up to rec
                 tags: nitrogen.CommandManager.commandTag(self.device.id),
                 body: {
                     command: {
-                        message: "Light (" + simpleLED.id + ") is " + JSON.stringify(lightOn) + " at " + Date.now()
+                        message: "Light (" + simpleLightSensor.id + ") is " + JSON.stringify(lightOn) + " at " + Date.now()
                     }
                 },
                 // Notice the response_to is the array of command ids from above. 
@@ -142,10 +142,10 @@ Now that we have your device able to send telemetry data, let's set it up to rec
     We already have a session start so modify that function as follows
 
         ```
-        service.connect(simpleLED, function(err, session, simpleLED) {
+        service.connect(simpleLightSensor, function(err, session, simpleLightSensor) {
         ... all of the existing code stays, just add the following
 
-            new SimpleManager(simpleLED).start(session, function(err, message) {
+            new SimpleManager(simpleLightSensor).start(session, function(err, message) {
                 if (err) return session.log.error(JSON.stringify(err));
             });
         });

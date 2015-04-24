@@ -62,8 +62,10 @@ The next thing to do is to set up the device in JavaScript and start talking to 
           var light = new five.Sensor("A0");
 
           light.on("change", function() {
+            var lightValue = Math.round(this.value * .1);
+
             //JOSH - check console.write
-            console.write("Light is @ " + Math.round(this.value * .1) + "%");
+            console.write("Light is @ " + lightValue + "%");
           });      
         });
         ```
