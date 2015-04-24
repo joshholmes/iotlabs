@@ -61,13 +61,14 @@ The next thing to do is to set up the device in JavaScript and start talking to 
         var board = new five.Board();
 
         var LEDPIN = 13; //13 is an LED on the board as well as a pin
-        var ON = 1; // 1 is on
 
         board.on("ready", function(){
-          console.log("Board connected...");
+            console.log("Board connected...");
 
-          // Set pin 13 to ON mode
-          this.pinMode(LEDPIN, ON);
+            this.pinMode(LEDPIN, five.Pin.OUTPUT);
+            var led = new five.Pin(LEDPIN);
+
+            led.write(1);
         });
         ```
     
@@ -88,20 +89,25 @@ In this lab you've gotten your first device up and running and are turning on th
 Modify the `board.on` section to loop rather than just turn on the light. 
 
 ```
-var OFF = 0;
-
 board.on("ready", function(){
   console.log("Board connected...");
 
-  setInterval(function() {
-        if (this.pinMode(LEDPIN) == ON)
+  this.pinMode(LEDPIN, five.Pin.OUTPUT);
+  var led = new five.Pin(LEDPIN);
+
+  var pinOn = false;
+    setInterval(function() {
+        if (pinOn)
         {
-          this.pinMode(LEDPIN, OFF);
+            console.log("Pin off");
+            led.write(0);
         }
         else
         {
-          this.pinMode(LEDPIN, ON);
+            console.log("Pin on");
+            led.write(1);
         }
+        pinOn = !pinOn;
     }, 1000);
 });
 ```
