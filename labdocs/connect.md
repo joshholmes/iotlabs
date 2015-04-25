@@ -28,18 +28,18 @@ If you did the previous labs, you can just modify your existing package.json by 
       },
       "version": "0.0.1",
       "dependencies": {
+        "johnny-five": "~0.8.37",
         "nitrogen": "~0.2.21",
         "nitrogen-cli": "~0.2.8",
-        "nitrogen-file-store": "~0.2.0",
-        "johnny-five": "~0.8.37"
-      },
+        "nitrogen-file-store": "~0.2.0"
+     },
       "keywords": [
         "devices",
         "iot",
-        "nitrogen",
         "arduino",
         "yun",
-        "arduino yun"
+        "arduino yun", 
+        "nitrogen"
       ]
     }
     ```
@@ -56,32 +56,16 @@ The next thing to do is to connect to Nitrogen and start sending in telemetry da
 2. Type in your requires
 
         ```
-        var nitrogen = require('nitrogen');
         var five = require("johnny-five");
-        ```
-
-3. Now let's fill out your board initialization
-
-    Please refer to the [Running Johnny-Five](./runningjohnnyfive.md) to make sure you are connecting properly for your platform.  
-
-        ```
         var board = new five.Board();
 
-        board.on("ready", function(){
-          console.log("Board connected...");
-
-          var light = new five.Sensor("A0");
-
-          light.on("change", function() {
-            //JOSH - check console.write
-            console.write("Light is @ " + Math.round(this.value * .1) + "%");
-          });      
-        });
+        var Store = require('nitrogen-file-store'),
+            nitrogen = require('nitrogen');
         ```
 
-    At this point we've initialized your board and are ready to connect to Nitrogen. 
+Started with the familiar Johnny-Five. The next bit is the Nitrogen File Store which will save our credentials. The second require is Nitrogen itself. 
 
-4. Now let's get our Nitrogen configuration ready. 
+3. Now let's get our Nitrogen configuration ready. 
 In a real app, you should put this in a config file somewhere. 
 
     For the API Key Below, if you are in my lab, use the following API key
@@ -99,66 +83,71 @@ In a real app, you should put this in a config file somewhere.
             api_key: "<Your API key>"
         };
 
-        var Store = require('nitrogen-file-store');
         config.store = new Store(config);
         ```
 
-5. Now we're ready to set up your device. 
+    If you are in a lab, make sure that you check with the instructor to attach to the correct Nitrogen host. 
+
+4. Now we're ready to set up your device. 
 
     The first part is to initialize your device as follows. Be sure to change your name to something more unique to you than My Nitrogen Device. 
 
         ```
-        var simpleLightSensor = new nitrogen.Device({
+        var simpleLED = new nitrogen.Device({
             nickname: 'simpleLightSensor',
-            name: 'My Nitrogen Device',
-            tags: ['sends:_isConnected, _lightValue', 'executes:_lightValue'],
+            name: 'My Light Sensor',
+            tags: ['sends:_lightLevel', 'executes:_lightOn'],
             api_key: config.api_key
         });
         ```
 
-6. The next thing is to connect to the service and send a message. 
+5. The next thing is to connect to the service
 
         ```
         var service = new nitrogen.Service(config);
-        service.connect(simpleLightSensor, function(err, session, simpleLightSensor) {
-            console.log("Connected to Nitrogen");
+
+        service.connect(simpleLED, function(err, session, simpleLED) {
+            if (err) return console.log('failed to connect simpleLED: ' + err);
+
+            // Right here is where we turn on the board and send telemetry data in the next step
+        });
+        ```
+
+        At this point, you could run the app and actually see it connect to Nitrogen and create it's credentials. That said, it won't do anything so that's kind of boring. 
+
+3. Now let's make it send telemetry data. 
+
+    Please refer to the [Running Johnny-Five](./runningjohnnyfive.md) to make sure you are connecting properly for your platform.  
+
+    This bit of code goes inside the `service.connect` in place of the commend in the previous section. 
+
+        ```
+        board.on("ready", function(){
+          console.log("Board connected...");
+
+          var light = new five.Sensor("A0");
+
+          light.on("change", function() {
+            var lightValue = Math.round(this.value * .1);
+
             var message = new nitrogen.Message({
-                type: '_isConnected',
+                type: '_lightLevel',
                 body: {
                     command: {
-                        message: "Light (" + simpleLightSensor.id + ") is connected at " + Date.now()
+                        'light': lightValue 
                     }
                 }
             });
 
+            console.log("Sending: " + JSON.stringify(message));
+
             message.send(session);
+          });      
         });
         ```
-7. Modify the app to actually send telemetry data. 
 
-        ```
-          light.on("change", function() {
-            var lightValue = Math.round(this.value * .1);
+    At this point we've initialized your board and are ready to connect to Nitrogen. 
 
-            sendMessage(lightValue);
-          });      
-        ```
-
-        ```
-        function sendMessage(lightValue) {
-            var message = new nitrogen.Message({
-            type: '_lightValue',
-            body: {
-                command: {
-                    message: "Light (" + simpleLightSensor.id + ") is at " + lightValue + "%"
-                }
-            }
-            });
-
-            message.send(session);
-
-        }
-        ```
 
 ## Running your device
 
@@ -169,6 +158,10 @@ At this point you can run the app and start sending telemetry data in. What it w
     `node connectN2.js`
 
 2. Log into the [Admin Portal](https://admin.nitrogen.io) and look at the messages tab to see your messages. 
+
+or you can view those from the command line using the N2 Command Line Interface as follows:
+
+`> n2 message ls`
 
 ## Summary
 
