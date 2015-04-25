@@ -1,0 +1,27 @@
+{
+  "name": "n2labs",
+  "homepage": "<some url>",
+  "author": "<your name>",
+  "licenses": [
+    {
+      "type": "<Your license>",
+      "url": "<Your license URL>"
+    }
+  ],
+  "main": "./lib",
+  "repository": {
+    "type": "git",
+    "url": "<your git repo>"
+  },
+  "version": "0.0.1",
+  "dependencies": {
+    "johnny-five": "~0.8.37"
+  },
+  "keywords": [
+    "devices",
+    "iot",
+    "arduino",
+    "yun",
+    "arduino yun"
+  ]
+}

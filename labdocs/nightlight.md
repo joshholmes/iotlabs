@@ -56,27 +56,22 @@ The next thing to do is to set up the device in JavaScript and start talking to 
         ```
         var board = new five.Board();
 
-        var LEDPIN = 13; //13 is an LED on the board as well as a pin
-        var ON = 1; // 1 is on
-        var OFF = 0; // 0 is off
+        var LEDPIN = 13;
 
         board.on("ready", function(){
           console.log("Board connected...");
+
+          this.pinMode(LEDPIN, five.Pin.OUTPUT);
+          var led = new five.Pin(LEDPIN);
 
           var light = new five.Sensor("A0");
 
           light.on("change", function() {
             var lightValue = Math.round(this.value * .1);
-            //JOSH - check console.write
-            console.write("Light is @ " + lightValue + "%");
-            if (lightValue > 50)
-            {
-              this.pinMode(LEDPIN, ON);
-            }
-            else
-            {
-              this.pinMode(LEDPIN, OFF);
-            }
+
+            console.log(lightValue);
+
+            led.write(lightValue > 20 ? 0: 1);
           });      
         });
         ```

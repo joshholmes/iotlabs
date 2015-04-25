@@ -2,6 +2,8 @@
 
 In this lab, we're going to connect to the device with Johnny-Five and start sending the device commands.
 
+There is a standard "Hello World" with the Arduino and it's a blinking LED. We're going to do that first because it doesn't actually require any wiring but you can plug an LED in if you want to. It's optional because the LED pin we are going to use is wired to a light that is hard wired on the board as well as a pin in the pinout section. 
+
 ## Setting up your NPM prerequisites 
 
 Node uses a install manager called the Node Package Manager (NPM) to install anything that you are dependent on in your node.js application. You can either manually run npm for each package or you can create a package.json file and install with a single command. 
@@ -111,6 +113,8 @@ board.on("ready", function(){
     }, 1000);
 });
 ```
+
+Extra extra credit - hook up an LED between pin 13 on your board and the ground so that you can see separate LED turn on. 
 
 ## Wrap up
 
