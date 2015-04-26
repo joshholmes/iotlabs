@@ -6,15 +6,49 @@ In the previous lab ([connecting to Nitrogen](./connect.md)) you connected to Ni
 
 Now that we have your device able to send telemetry data, let's set it up to receive commands. This is a little more involved but not terribly hard. 
 
+We're going to start with the same basic telemetry data device that you completed in the previous lab called Connect. 
+
+## Adding the LED bits to the app. 
+1. Add the LED bits to the top of the little device app. 
+
+```
+// these first two were already there
+var five = require("johnny-five");
+var board = new five.Board();
+
+// add these two
+var LEDPIN = 13;
+var led = null;
+...
+```
+
+2. In the board connect, add the LED output device 
+
+```
+    board.on("ready", function(){
+        console.log("Board connected...");
+
+        var light = new five.Sensor("A0");
+        
+        // add these two lines here: 
+        this.pinMode(LEDPIN, five.Pin.OUTPUT);
+        led = new five.Pin(LEDPIN);
+        ... 
+```
+
+## Creating a command manager for Nitrogen.
+
+A command manager receives and handles commands from the server side. 
+
 1. The way that we're going to do this is to create a "command manager". 
 
         ```
-        function SimpleManager() {
+        function SimpleCommandManager() {
             nitrogen.CommandManager.apply(this, arguments);
         }
 
-        SimpleManager.prototype = Object.create(nitrogen.CommandManager.prototype);
-        SimpleManager.prototype.constructor = SimpleManager;
+        SimpleCommandManager.prototype = Object.create(nitrogen.CommandManager.prototype);
+        SimpleCommandManager.prototype.constructor = SimpleCommandManager;
         ```
     
     At this point we've got a command manager object and we've set it's prototype to the generic nitrogen.CommandManager prototype so technically it could receive commands but by default it doesn't tell Nitrogen that it's interested in any messages. 
@@ -24,15 +58,18 @@ Now that we have your device able to send telemetry data, let's set it up to rec
     The isCommand function tells Nitrogen that this is a command that you respond to and the isRelevant are messages that you want to see. 
 
         ```
-        SimpleManager.prototype.isCommand = function(message) {
-            return message.is('_lightOn');
-        };
+        SimpleCommandManager.prototype.isRelevant = function(message) {
+            console.log("isRelevant");
 
-        SimpleManager.prototype.isRelevant = function(message) {
-            var relevant = ( (message.is('_lightValue') || message.is('_isOn')) &&
+            var relevant = ( (message.is('_lightOn') || message.is('_lightLevel')) &&
                              (!this.device || message.from === this.device.id || message.to == this.device.id));
 
             return relevant;
+        };
+
+        SimpleCommandManager.prototype.isCommand = function(message) {
+            console.log("isCommand");
+            return message.is('_lightLevel');
         };
         ```
 
@@ -43,13 +80,15 @@ Now that we have your device able to send telemetry data, let's set it up to rec
     First let the base manager try to handle it and second, try to handle it yourself. You get the two messages, the downstream and the upstream so you can check to see if it was a request response or whatever. 
 
         ```
-        SimpleManager.prototype.obsoletes = function(downstreamMsg, upstreamMsg) {
+        SimpleCommandManager.prototype.obsoletes = function(downstreamMsg, upstreamMsg) {
+            console.log("obsoletes");
+
             if (nitrogen.CommandManager.obsoletes(downstreamMsg, upstreamMsg))
                 return true;
 
-            var value = downstreamMsg.is("_isOn") &&
+            var value = downstreamMsg.is("_lightOn") &&
                         downstreamMsg.isResponseTo(upstreamMsg) &&
-                        upstreamMsg.is("_lightOn");
+                        upstreamMsg.is("_lightLevel");
 
             return value;
         };
@@ -60,7 +99,9 @@ Now that we have your device able to send telemetry data, let's set it up to rec
     This is a longer function because it's all of your actual business logic. 
 
         ```
-        simpleManager.prototype.executeQueue = function(callback) {
+        SimpleCommandManager.prototype.executeQueue = function(callback) {
+            console.log("executeQueue");
+
             var self = this;
 
             if (!this.device) return callback(new Error('no device attached to control manager.'));
@@ -68,46 +109,39 @@ Now that we have your device able to send telemetry data, let's set it up to rec
             // This looks at the list of active commands and returns if there's no commands to process.
             var activeCommands = this.activeCommands();
             if (activeCommands.length === 0) {
-                this.session.log.warn('SimpleManager::executeQueue: no active commands to execute.');
+                this.session.log.warn('SimpleCommandManager::executeQueue: no active commands to execute.');
                 return callback();
             }
 
-            var lightOn;
             var commandIds = [];
 
-            // Here we are going to find the final state and but collect all the 
-            // active command ids because we'll use them in a moment.
+            var lightOn;
+
+            // Here we are going to find the final state and but collect all the active command ids because we'll use them in a moment.
             activeCommands.forEach(function(activeCommand) {
-              console.log("activeCommand: " + JSON.stringify(activeCommand));
-                try {
-                  lightOn = activeCommand.body.value;
-                  commandIds.push(activeCommand.id);
-
-                  if (lightOn == "true")
-                  {
-                    board.digitalWrite(LEDPIN, 1);
-                  }
-                  else
-                  {
-                    board.digitalWrite(LEDPIN, 0);
-                  }
-
-                 } catch (ex) {
-                  callback(ex);
+                if (activeCommand.body.command.light > 20) {
+                    lightOn = 0;
                 }
+                else {
+                    lightOn = 1;
+                }
+                commandIds.push(activeCommand.id);
             });
+            
+            if (led != null) {
+                led.write(lightOn);
+            }
 
-            // This is the response to the _lightOn command.
+            // This is the response to the _lightLevel command.
+            // Notice the response_to is the array of command ids from above. This is used in the obsoletes method above as well.
             var message = new nitrogen.Message({
-                type: '_isOn',
+                type: '_lightOn',
                 tags: nitrogen.CommandManager.commandTag(self.device.id),
                 body: {
                     command: {
-                        message: "Light (" + simpleLightSensor.id + ") is " + JSON.stringify(lightOn) + " at " + Date.now()
+                        message: "Light (" + self.device.id + ") is " + JSON.stringify(lightOn) + " at " + Date.now()
                     }
                 },
-                // Notice the response_to is the array of command ids from above. 
-                // This is used in the obsoletes method above as well.
                 response_to: commandIds
             });
 
@@ -117,10 +151,10 @@ Now that we have your device able to send telemetry data, let's set it up to rec
                 // let the command manager know we processed this _lightOn message by passing it the _isOn message.
                 self.process(new nitrogen.Message(message));
 
-                // need to callback if there aren't any issues so commandManager can proceed.
+                // need to callback if there aren't any issues so commandManager can proceed.   
                 return callback();
             });
-        };
+        }
         ```
 
 5. Now we need to kick off the Command Manager as follows
@@ -128,7 +162,8 @@ Now that we have your device able to send telemetry data, let's set it up to rec
     The filter below is an array of tags of on the messages that you're interested in. 
 
         ```
-        SimpleManager.prototype.start = function(session, callback) {
+        SimpleCommandManager.prototype.start = function(session, callback) {
+
             var filter = {
                 tags: nitrogen.CommandManager.commandTag(this.device.id)
             };
@@ -145,16 +180,19 @@ Now that we have your device able to send telemetry data, let's set it up to rec
         service.connect(simpleLightSensor, function(err, session, simpleLightSensor) {
         ... all of the existing code stays, just add the following
 
-            new SimpleManager(simpleLightSensor).start(session, function(err, message) {
-                if (err) return session.log.error(JSON.stringify(err));
-            });
+        new SimpleCommandManager(simpleLightSensor).start(session, function(err, message) {
+            if (err) return session.log.error(JSON.stringify(err));
+
+            console.log("SimpleCommandManager started.");
         });
 
         ```
 
-    At this point, run your device with the command `node blinkn2.js`. 
+    At this point, run your device with the command `> node connect.js` or whatever you called it. 
     
     Once it's up and running, you are ready to send commands to the device from a different laptop or just a different terminal window. Make sure to keep the johnny-five app running. 
+
+This should act as a night light at this point in time if you have everything wired up - or you can send it commands as follows: 
     
 7. Send commands as follows. 
 
@@ -167,17 +205,17 @@ The one catch here is that different operating systems parse command line JSON i
 
 Windows 8
 ```
-`./node_modules/.bin/n2 message send '{\"type\": \"_lightOn\", \"tags\":[\"command:<Your Device ID>\"], \"body\": {\"value\": \"true\"}, \"to\":\"<Your Device ID>\"}'
+`> n2 message send '{\"type\": \"_lightOn\", \"tags\":[\"command:<Your Device ID>\"], \"body\": {\"value\": \"true\"}, \"to\":\"<Your Device ID>\"}'
 ```
 
 Windows 7 or prior
 ```
-`./node_modules/.bin/n2 message send "{\"type\": \"_lightOn\", \"tags\":[\"command:<Your Device ID>\"], \"body\": {\"value\": \"true\"}, \"to\":\"<Your Device ID>\"}"
+`> n2 message send "{\"type\": \"_lightOn\", \"tags\":[\"command:<Your Device ID>\"], \"body\": {\"value\": \"true\"}, \"to\":\"<Your Device ID>\"}"
 ```
 
 Mac or Linux
 ```
-`./node_modules/.bin/n2 message send '{"type": "_lightOn", "tags":["command:<Your Device ID>"], "body": {"value": "true"}, "to":"<Your Device ID>"}'
+`> n2 message send '{"type": "_lightOn", "tags":["command:<Your Device ID>"], "body": {"value": "true"}, "to":"<Your Device ID>"}'
 ```
 
 At this point you have gotten your board prepped for Johnny-Five, a Johnny-Five app, connected to Nitrogen and received messages from Nitrogen. 

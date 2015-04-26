@@ -28,5 +28,5 @@ node_modules
 
 # ignore the nitrogen client file
 *.io_443
-
+*_3030
 localhost*	

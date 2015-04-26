@@ -4,7 +4,6 @@ var board = new five.Board();
 var Store = require('nitrogen-file-store'),
     nitrogen = require('nitrogen');
 
-
 var config = {
     host: 'localhost',
     http_port: 3030,
@@ -14,8 +13,8 @@ var config = {
 
 config.store = new Store(config);
 
-var simpleLED = new nitrogen.Device({
-    nickname: 'simpleLED',
+var simpleLightSensor = new nitrogen.Device({
+    nickname: 'simpleLightSensor',
     name: 'My Light Sensor',
     tags: ['sends:_lightLevel', 'executes:_lightOn'],
     api_key: config.api_key
@@ -23,8 +22,8 @@ var simpleLED = new nitrogen.Device({
 
 var service = new nitrogen.Service(config);
 
-service.connect(simpleLED, function(err, session, simpleLED) {
-    if (err) return console.log('failed to connect simpleLED: ' + err);
+service.connect(simpleLightSensor, function(err, session, simpleLightSensor) {
+    if (err) return console.log('failed to connect simpleLightSensor: ' + err);
 
     board.on("ready", function(){
       console.log("Board connected...");
@@ -42,6 +41,8 @@ service.connect(simpleLED, function(err, session, simpleLED) {
                 }
             }
         });
+
+        console.log("Sending: " + JSON.stringify(message));
 
         message.send(session);
       });      

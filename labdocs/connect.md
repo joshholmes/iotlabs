@@ -93,7 +93,7 @@ In a real app, you should put this in a config file somewhere.
     The first part is to initialize your device as follows. Be sure to change your name to something more unique to you than My Nitrogen Device. 
 
         ```
-        var simpleLED = new nitrogen.Device({
+        var simpleLightSensor = new nitrogen.Device({
             nickname: 'simpleLightSensor',
             name: 'My Light Sensor',
             tags: ['sends:_lightLevel', 'executes:_lightOn'],
@@ -106,8 +106,8 @@ In a real app, you should put this in a config file somewhere.
         ```
         var service = new nitrogen.Service(config);
 
-        service.connect(simpleLED, function(err, session, simpleLED) {
-            if (err) return console.log('failed to connect simpleLED: ' + err);
+        service.connect(simpleLightSensor, function(err, session, simpleLightSensor) {
+            if (err) return console.log('failed to connect simpleLightSensor: ' + err);
 
             // Right here is where we turn on the board and send telemetry data in the next step
         });
