@@ -26,7 +26,7 @@ If you did the [blink.js](./blinky.md) lab, you can just use the same folder and
 
 1. Create a file called package.json
     
-    ```
+```js
     {
       "name": "n2labs",
       "homepage": "<some url>",
@@ -54,7 +54,7 @@ If you did the [blink.js](./blinky.md) lab, you can just use the same folder and
         "arduino yun"
       ]
     }
-    ```
+```
 
 ## Let's get coding:
 
@@ -63,15 +63,15 @@ The next thing to do is to set up the device in JavaScript and start talking to 
 1. Create a file called `lightsensor.js`. 
 2. Type in your requires. The things that are listed here are the things that this file has access to. This should match what's in your package.json file. 
 
-        ```
+```js
         var five = require("johnny-five");
-        ```
+```
 
 3. Now let's fill out your board initialization
 
     Please refer to the [Running Johnny-Five](./runningjohnnyfive.md) to make sure you are connecting properly for your platform.  
 
-        ```
+```js
         var board = new five.Board();
 
         board.on("ready", function(){
@@ -85,7 +85,7 @@ The next thing to do is to set up the device in JavaScript and start talking to 
             console.log("Light is @ " + lightValue + "%");
           });      
         });
-        ```
+```
     
 ## Running your device
 
