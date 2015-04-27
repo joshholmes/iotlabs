@@ -132,11 +132,13 @@ In a real app, you should put this in a config file somewhere.
 
             var message = new nitrogen.Message({
                 type: '_lightLevel',
+                tags: nitrogen.CommandManager.commandTag(simpleLightSensor.id),
                 body: {
                     command: {
                         'light': lightValue 
                     }
-                }
+                }, 
+                to: simpleLightSensor.id
             });
 
             console.log("Sending: " + JSON.stringify(message));

@@ -35,11 +35,13 @@ service.connect(simpleLightSensor, function(err, session, simpleLightSensor) {
 
         var message = new nitrogen.Message({
             type: '_lightLevel',
+            tags: nitrogen.CommandManager.commandTag(simpleLightSensor.id),
             body: {
                 command: {
                     'light': lightValue 
                 }
-            }
+            }, 
+            to: simpleLightSensor.id
         });
 
         console.log("Sending: " + JSON.stringify(message));
