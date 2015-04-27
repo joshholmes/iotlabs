@@ -80,8 +80,7 @@ The next thing to do is to set up the device in JavaScript and start talking to 
           light.on("change", function() {
             var lightValue = Math.round(this.value * .1);
 
-            //JOSH - check console.write
-            console.write("Light is @ " + lightValue + "%");
+            console.log("Light is @ " + lightValue + "%");
           });      
         });
         ```

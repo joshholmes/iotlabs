@@ -10,7 +10,6 @@ board.on("ready", function(){
   light.on("change", function() {
     var lightValue = Math.round(this.value * .1);
 
-    //JOSH - check console.write
     console.log("Light is @ " + lightValue + "%");
   });      
 });
