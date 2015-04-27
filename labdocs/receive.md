@@ -192,31 +192,8 @@ A command manager receives and handles commands from the server side.
     
     Once it's up and running, you are ready to send commands to the device from a different laptop or just a different terminal window. Make sure to keep the johnny-five app running. 
 
-This should act as a night light at this point in time if you have everything wired up - or you can send it commands as follows: 
+This should act as a night light at this point in time if you have everything wired up.
     
-7. Send commands as follows. 
-
-Step one, login to n2:
- ` ./node_modules/.bin/n2 principal login n2labs@outlook.com.`
-
-Step two, get your device ID by either logging into the portal and looking for your device in the list of devices or you can run the command `./node_modules/.bin/n2 device ls`.
-
-The one catch here is that different operating systems parse command line JSON in different ways so look for your OS's 
-
-Windows 8
-```
-`> n2 message send '{\"type\": \"_lightOn\", \"tags\":[\"command:<Your Device ID>\"], \"body\": {\"value\": \"true\"}, \"to\":\"<Your Device ID>\"}'
-```
-
-Windows 7 or prior
-```
-`> n2 message send "{\"type\": \"_lightOn\", \"tags\":[\"command:<Your Device ID>\"], \"body\": {\"value\": \"true\"}, \"to\":\"<Your Device ID>\"}"
-```
-
-Mac or Linux
-```
-`> n2 message send '{"type": "_lightOn", "tags":["command:<Your Device ID>"], "body": {"value": "true"}, "to":"<Your Device ID>"}'
-```
 
 At this point you have gotten your board prepped for Johnny-Five, a Johnny-Five app, connected to Nitrogen and received messages from Nitrogen. 
 
