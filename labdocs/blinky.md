@@ -51,15 +51,15 @@ The next thing to do is to set up the device in JavaScript and start talking to 
 1. Create a file called `blinky.js`. 
 2. Type in your requires. The things that are listed here are the things that this file has access to. This should match what's in your package.json file. 
 
-        ```
-        var five = require("johnny-five");
-        ```
+    ```
+    var five = require("johnny-five");
+    ```
 
 3. Now let's fill out your board initialization
 
     Please refer to the [Running Johnny-Five](./runningjohnnyfive.md) to make sure you are connecting properly for your platform.  
 
-        ```
+    ```
         var board = new five.Board();
 
         var LEDPIN = 13; //13 is an LED on the board as well as a pin
@@ -72,7 +72,7 @@ The next thing to do is to set up the device in JavaScript and start talking to 
 
             led.write(1);
         });
-        ```
+    ```
     
 ## Running your device
 
