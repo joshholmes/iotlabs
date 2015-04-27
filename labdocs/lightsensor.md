@@ -16,6 +16,8 @@ This is where some of the fun of playing with devices starts in that we get to c
 8. Two rows over, plug in the other side of the 220 resister
 9. Wire from that row to the ground channel on the breadboard
 
+![Wiring up](./images/lightsensorwiring.png "Light sensor wiring diagram")
+
 You now have a simple circuit that you can get started with. 
 
 ## Double check your package.json. 
